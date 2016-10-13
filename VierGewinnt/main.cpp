@@ -15,13 +15,15 @@ void ReleaseStuff()
 
 int main()
 {
+	bool winCondition = true;
+
 	window = new sf::RenderWindow(sf::VideoMode(700, 600), "Vier Gewinnt");
 	window->setKeyRepeatEnabled(false);
 
 	gameManager = new GameManager(7, 6);
 	input = new InputHandler();
 
-	while (window->isOpen())
+	while(window->isOpen())
 	{
 		sf::Event event;
 		while (window->pollEvent(event))
@@ -29,18 +31,28 @@ int main()
 			if (event.type == sf::Event::Closed)
 			{
 				window->close();
-			} else if( event.type == sf::Event::KeyPressed)
+			} else if(event.type == sf::Event::KeyPressed)
 			{
-				input->handleKeyEvent(&event, window, gameManager);
+				if(winCondition)
+				{
+					input->handleKeyEvent(&event, window, gameManager);
+				} else
+				{
+					if (event.key.code == sf::Keyboard::Key::Escape)
+					{
+						window->close();
+					}
+				}
 			}
 		}
 
 		window->clear();
 
-		if(!gameManager->Run(window))
+		if(winCondition)
 		{
-			window->close();
+			winCondition = gameManager->Run();
 		}
+		gameManager->Render(window);
 
 		window->display();
 	}

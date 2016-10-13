@@ -78,3 +78,8 @@ sf::Vector2<int> Token::getPosition()
 {
 	return position;
 }
+
+Ownership Token::getOwner()
+{
+	return owner;
+}

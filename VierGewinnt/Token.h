@@ -15,6 +15,7 @@ public:
 	void setRow(int row);
 	void SetColumn(int column);
 	sf::Vector2<int> getPosition();
+	Ownership getOwner();
 
 private:
 	sf::CircleShape* shape;

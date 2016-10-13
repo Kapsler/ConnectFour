@@ -10,13 +10,15 @@ public:
 	~Board();
 
 	void Render(sf::RenderWindow* window);
-	void PutTokenInSlot(int slot, Ownership owner);
+	void PutTokenInSlot(int slot, Ownership player);
 	int SelectSlot(int oldSlot, int newSlot);
-	bool FourInARow();
+	bool FourInARow(sf::Vector2<int> token, Ownership player);
+	bool getWin();
 
 private:
 	std::vector<std::vector<Token*>> board;
 	bool hasEmptyToken(int slotNumber);
 
 	sf::Vector2<int> lastPlayedToken;
+	bool win;
 };

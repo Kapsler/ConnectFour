@@ -31,19 +31,21 @@ void GameManager::SelectSlotLeft()
 	selectedSlot = board->SelectSlot(selectedSlot, selectedSlot - 1);
 }
 
-bool GameManager::Run(sf::RenderWindow* window)
+bool GameManager::Run()
 {
 	if(checkWin())
 	{
 		return false;
 	}
 
-	//Draw Board
-	board->Render(window);
-
 	return true;
 }
 
+void GameManager::Render(sf::RenderWindow* window)
+{
+	//Draw Board
+	board->Render(window);
+}
 
 void GameManager::ToggleTurn()
 {
@@ -59,7 +61,7 @@ void GameManager::ToggleTurn()
 
 bool GameManager::checkWin()
 {
-	return board->FourInARow();
+	return board->getWin();
 }
 
 Ownership GameManager::WhoseTurn()

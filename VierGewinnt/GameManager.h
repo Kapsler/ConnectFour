@@ -12,7 +12,8 @@ public:
 	void PutTokenInSlot();
 	Ownership WhoseTurn();
 
-	bool Run(sf::RenderWindow* window);
+	bool Run();
+	void Render(sf::RenderWindow* window);
 private:
 	void ToggleTurn();
 	bool checkWin();

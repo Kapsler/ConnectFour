@@ -21,6 +21,8 @@ Board::Board(int columns, int rows)
 		board.push_back(slot);
 		slot.clear();
 	}
+
+	win = false;
 }
 
 Board::~Board()
@@ -66,9 +68,177 @@ int Board::SelectSlot(int oldSlot, int newSlot)
 	}
 }
 
-bool Board::FourInARow()
+bool Board::FourInARow(sf::Vector2<int> token, Ownership player)
 {
+
+	//Check horizontal
+	int newTokenSlot = token.x;
+	int newTokenRow = token.y;
+	int counterMinus = 0, counterPlus = 0;
+
+	for(int i = 0; i < 4; i++)
+	{
+		if(newTokenSlot - i >= 0)
+		{
+			if (board.at(newTokenSlot - i).at(newTokenRow)->getOwner() == player)
+			{
+				counterMinus++;
+			} else
+			{
+				break;
+			}
+		}
+	}
+
+	for (int i = 1; i < 4; i++)
+	{
+		if (newTokenSlot + i < board.size())
+		{
+			if (board.at(newTokenSlot + i).at(newTokenRow)->getOwner() == player)
+			{
+				counterPlus++;
+			}
+			else
+			{
+				break;
+			}
+		}
+	}
+	
+	if(counterMinus + counterPlus >= 4)
+	{
+		return true;
+	}
+
+	//Check vertical
+	counterMinus = 0;
+	counterPlus = 0;
+
+	//Nach Unten - Unterstes Element Index 5
+	for (int i = 0; i < 4; i++)
+	{
+		if (newTokenRow + i < board[0].size())
+		{
+			if (board.at(newTokenSlot).at(newTokenRow + i)->getOwner() == player)
+			{
+				counterPlus++;
+			}
+			else
+			{
+				break;
+			}
+		}
+	}
+
+	//Nach Oben - Unterstes Element Index 0
+	for (int i = 1; i < 4; i++)
+	{
+		if (newTokenRow - i >= 0)
+		{
+			if (board.at(newTokenSlot).at(newTokenRow - i)->getOwner() == player)
+			{
+				counterMinus++;
+			}
+			else
+			{
+				break;
+			}
+		}
+	}
+
+	if (counterMinus + counterPlus >= 4)
+	{
+		return true;
+	}
+
+	//Check diagonal - links oben nach rechts unten
+	counterMinus = 0;
+	counterPlus = 0;
+
+	//Nach Links und Oben
+	for (int i = 0; i < 4; i++)
+	{
+		if (newTokenSlot - i >= 0 && newTokenRow - i >= 0)
+		{
+			if (board.at(newTokenSlot - i).at(newTokenRow - i)->getOwner() == player)
+			{
+				counterMinus++;
+			}
+			else
+			{
+				break;
+			}
+		}
+	}
+
+	//Nach Rechts und Unten
+	for (int i = 1; i < 4; i++)
+	{
+		if (newTokenSlot + i < board.size() && newTokenRow + i < board[0].size())
+		{
+			if (board.at(newTokenSlot + i).at(newTokenRow + i)->getOwner() == player)
+			{
+				counterPlus++;
+			}
+			else
+			{
+				break;
+			}
+		}
+	}
+
+	if (counterMinus + counterPlus >= 4)
+	{
+		return true;
+	}
+
+	//Check diagonal - rechts oben nach links unten
+	counterMinus = 0;
+	counterPlus = 0;
+
+	//Nach Rechts und Oben
+	for (int i = 0; i < 4; i++)
+	{
+		if (newTokenSlot + i < board.size() && newTokenRow - i >= 0)
+		{
+			if (board.at(newTokenSlot + i).at(newTokenRow - i)->getOwner() == player)
+			{
+				counterMinus++;
+			}
+			else
+			{
+				break;
+			}
+		}
+	}
+
+	//Nach Links und Unten
+	for (int i = 1; i < 4; i++)
+	{
+		if (newTokenSlot - i >= 0 && newTokenRow + i < board[0].size())
+		{
+			if (board.at(newTokenSlot - i).at(newTokenRow + i)->getOwner() == player)
+			{
+				counterPlus++;
+			}
+			else
+			{
+				break;
+			}
+		}
+	}
+
+	if (counterMinus + counterPlus >= 4)
+	{
+		return true;
+	}
+
 	return false;
+}
+
+bool Board::getWin()
+{
+	return win;
 }
 
 bool Board::hasEmptyToken(int slotNumber)
@@ -84,17 +254,22 @@ bool Board::hasEmptyToken(int slotNumber)
 	return false;
 }
 
-void Board::PutTokenInSlot(int slot, Ownership owner)
+void Board::PutTokenInSlot(int slot, Ownership player)
 {
 	//Find Last empty Token and place chip
 	for (auto i = board[slot].rbegin(); i != board[slot].rend(); ++i)
 	{
 		if (!((*i)->isFilled()))
 		{
-			(*i)->SetOwnership(owner);
+			(*i)->SetOwnership(player);
 			lastPlayedToken = (*i)->getPosition();
 			break;
 		}
+	}
+
+	if(FourInARow(lastPlayedToken, player))
+	{
+		win = true;
 	}
 
 	std::cout << lastPlayedToken.x << " " << lastPlayedToken.y << std::endl;
