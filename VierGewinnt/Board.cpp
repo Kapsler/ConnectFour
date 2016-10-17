@@ -25,6 +25,31 @@ Board::Board(int columns, int rows)
 	win = false;
 }
 
+Board::Board(const Board& other)
+{
+	sf::Vector2<float> position(0.0f, 0.0f);
+	std::vector<Token*> slot;
+
+	for (auto i = 0; i < other.board.size(); ++i)
+	{
+		for (auto j = 0; j < other.board[0].size(); ++j)
+		{
+			Token* token = new Token(position);
+			token->setRow(j);
+			token->SetColumn(i);
+			slot.push_back(token);
+			position.y += 100.0f;
+		}
+		position.y = 0.0f;
+		position.x += 100.0f;
+		board.push_back(slot);
+		slot.clear();
+	}
+
+	this->lastPlayedToken = other.lastPlayedToken;
+	this->win = other.win;
+}
+
 Board::~Board()
 {
 	for(auto i : board)
@@ -62,10 +87,9 @@ int Board::SelectSlot(int oldSlot, int newSlot)
 		}
 
 		return newSlot;
-	} else
-	{
-		return oldSlot;
 	}
+	
+	return oldSlot;
 }
 
 bool Board::FourInARow(sf::Vector2<int> token, Ownership player)
@@ -236,9 +260,27 @@ bool Board::FourInARow(sf::Vector2<int> token, Ownership player)
 	return false;
 }
 
+bool Board::BoardIsFull()
+{
+	for(int i = 0; i < 7; i++)
+	{
+		if(hasEmptyToken(i))
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
 bool Board::getWin()
 {
 	return win;
+}
+
+Ownership Board::getOwnerOfToken(sf::Vector2<int> pos)
+{
+	return board[pos.x][pos.y]->getOwner();
 }
 
 bool Board::hasEmptyToken(int slotNumber)
@@ -254,7 +296,17 @@ bool Board::hasEmptyToken(int slotNumber)
 	return false;
 }
 
-void Board::PutTokenInSlot(int slot, Ownership player)
+int Board::getLastPlayedSlot()
+{
+	return lastPlayedToken.x;
+}
+
+std::vector<std::vector<Token*>> Board::getArray()
+{
+	return board;
+}
+
+bool Board::PutTokenInSlot(int slot, Ownership player)
 {
 	//Find Last empty Token and place chip
 	for (auto i = board[slot].rbegin(); i != board[slot].rend(); ++i)
@@ -263,15 +315,16 @@ void Board::PutTokenInSlot(int slot, Ownership player)
 		{
 			(*i)->SetOwnership(player);
 			lastPlayedToken = (*i)->getPosition();
-			break;
+
+			if (FourInARow(lastPlayedToken, player) || BoardIsFull())
+			{
+				win = true;
+			}
+
+			return true;
 		}
 	}
 
-	if(FourInARow(lastPlayedToken, player))
-	{
-		win = true;
-	}
-
-	std::cout << lastPlayedToken.x << " " << lastPlayedToken.y << std::endl;
+	return false;
 }
 

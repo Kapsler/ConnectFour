@@ -1,13 +1,15 @@
 #include "GameManager.h"
+#include <iostream>
 
-GameManager::GameManager(int columns, int rows)
+GameManager::GameManager(int columns, int rows, std::vector<Player*> players)
 {
 	board = new Board(columns, rows);
 
-	selectedSlot = 0;
-	board->SelectSlot(selectedSlot, selectedSlot);
+	this->players = players;
 
-	PlayerTurn = PLAYER1;
+	turns = 0;
+	currentPlayerId = turns;
+	currentPlayer = players.at(currentPlayerId);
 }
 
 GameManager::~GameManager()
@@ -15,27 +17,24 @@ GameManager::~GameManager()
 
 }
 
-void GameManager::PutTokenInSlot()
+bool GameManager::isMovePossible(int slot)
 {
-	board->PutTokenInSlot(selectedSlot, WhoseTurn());
-	ToggleTurn();
+	return board->hasEmptyToken(slot);
 }
 
-void GameManager::SelectSlotRight()
+bool GameManager::Run(sf::RenderWindow* window)
 {
-	selectedSlot = board->SelectSlot(selectedSlot, selectedSlot + 1);
-}
+	currentPlayerId = turns % 2;
+	currentPlayer = players.at(currentPlayerId);
 
-void GameManager::SelectSlotLeft()
-{
-	selectedSlot = board->SelectSlot(selectedSlot, selectedSlot - 1);
-}
-
-bool GameManager::Run()
-{
 	if(checkWin())
 	{
 		return false;
+	}
+
+	if(currentPlayer->MakeMove(window, board))
+	{
+		ToggleTurn();
 	}
 
 	return true;
@@ -49,14 +48,8 @@ void GameManager::Render(sf::RenderWindow* window)
 
 void GameManager::ToggleTurn()
 {
-	if (PlayerTurn == PLAYER1)
-	{
-		PlayerTurn = PLAYER2;
-	}
-	else
-	{
-		PlayerTurn = PLAYER1;
-	}
+	turns++;
+	std::cout << turns << std::endl;
 }
 
 bool GameManager::checkWin()
@@ -66,5 +59,10 @@ bool GameManager::checkWin()
 
 Ownership GameManager::WhoseTurn()
 {
-	return PlayerTurn;
+	return currentPlayer->getIdentifier();
+}
+
+Board* GameManager::getCurrentBoard()
+{
+	return board;
 }

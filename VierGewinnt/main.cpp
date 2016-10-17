@@ -1,11 +1,13 @@
 #include "SFML/Graphics.hpp"
 #include "Board.h"
-#include "InputHandler.h"
 #include "GameManager.h"
+#include "Player.h"
+#include "HumanPlayer.h"
+#include "AiPlayer.h"
 
 sf::RenderWindow* window;
 GameManager* gameManager;
-InputHandler* input;
+std::vector<Player*> players;
 
 void ReleaseStuff()
 {
@@ -20,23 +22,29 @@ int main()
 	window = new sf::RenderWindow(sf::VideoMode(700, 600), "Vier Gewinnt");
 	window->setKeyRepeatEnabled(false);
 
-	gameManager = new GameManager(7, 6);
-	input = new InputHandler();
+	//Init
+	players.push_back(new HumanPlayer());
+	players.push_back(new AiPlayer());
+	gameManager = new GameManager(7, 6, players);
+
 
 	while(window->isOpen())
 	{
-		sf::Event event;
-		while (window->pollEvent(event))
+		window->clear();
+
+		if(winCondition)
 		{
-			if (event.type == sf::Event::Closed)
+			winCondition = gameManager->Run(window);
+		} else
+		{
+			sf::Event event;
+			while (window->pollEvent(event))
 			{
-				window->close();
-			} else if(event.type == sf::Event::KeyPressed)
-			{
-				if(winCondition)
+				if (event.type == sf::Event::Closed)
 				{
-					input->handleKeyEvent(&event, window, gameManager);
-				} else
+					window->close();
+				}
+				else if (event.type == sf::Event::KeyPressed)
 				{
 					if (event.key.code == sf::Keyboard::Key::Escape)
 					{
@@ -44,13 +52,6 @@ int main()
 					}
 				}
 			}
-		}
-
-		window->clear();
-
-		if(winCondition)
-		{
-			winCondition = gameManager->Run();
 		}
 		gameManager->Render(window);
 

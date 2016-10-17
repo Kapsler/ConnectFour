@@ -1,6 +1,5 @@
 #pragma once
 
-
 enum Ownership
 {
 	NONE,

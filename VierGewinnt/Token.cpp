@@ -61,6 +61,8 @@ void Token::SetOwnership(Ownership player)
 	case PLAYER2:
 		shape->setFillColor(sf::Color::Red);
 		break;
+	default:
+		break;
 	}
 }
 
