@@ -29,19 +29,17 @@ Board::Board(const Board& other)
 {
 	sf::Vector2<float> position(0.0f, 0.0f);
 	std::vector<Token*> slot;
-
+	
 	for (auto i = 0; i < other.board.size(); ++i)
 	{
-		for (auto j = 0; j < other.board[0].size(); ++j)
+		for (auto j = 0; j < other.board[i].size(); ++j)
 		{
 			Token* token = new Token(position);
-			token->setRow(j);
-			token->SetColumn(i);
+			token->setRow(other.getArray()[i][j]->getPosition().y);
+			token->SetColumn(other.getArray()[i][j]->getPosition().x);
+			token->SetOwnership(other.getArray()[i][j]->getOwner());
 			slot.push_back(token);
-			position.y += 100.0f;
 		}
-		position.y = 0.0f;
-		position.x += 100.0f;
 		board.push_back(slot);
 		slot.clear();
 	}
@@ -301,7 +299,7 @@ int Board::getLastPlayedSlot()
 	return lastPlayedToken.x;
 }
 
-std::vector<std::vector<Token*>> Board::getArray()
+const std::vector<std::vector<Token*>> Board::getArray() const
 {
 	return board;
 }

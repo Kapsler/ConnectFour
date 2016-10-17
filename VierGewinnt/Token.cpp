@@ -17,6 +17,15 @@ Token::Token(sf::Vector2<float> pos)
 	owner = NONE;
 }
 
+Token::Token(const Token& other)
+{
+	shape = new sf::CircleShape(other.getShape());
+	background = new sf::RectangleShape(other.getBackground());
+	filled = other.isFilled();
+	owner = other.getOwner();
+	position = other.getPosition();
+}
+
 Token::~Token()
 {
 	delete shape;
@@ -41,7 +50,7 @@ void Token::setSelected(bool state)
 
 }
 
-bool Token::isFilled()
+bool Token::isFilled() const
 {
 	return filled;
 }
@@ -49,7 +58,6 @@ bool Token::isFilled()
 void Token::SetOwnership(Ownership player)
 {
 	owner = player;
-	filled = true;
 	switch (player)
 	{
 	case NONE:
@@ -57,9 +65,11 @@ void Token::SetOwnership(Ownership player)
 		break;
 	case PLAYER1:
 		shape->setFillColor(sf::Color::Yellow);
+		filled = true;
 		break;
 	case PLAYER2:
 		shape->setFillColor(sf::Color::Red);
+		filled = true;
 		break;
 	default:
 		break;
@@ -76,12 +86,27 @@ void Token::SetColumn(int column)
 	position.x = column;
 }
 
-sf::Vector2<int> Token::getPosition()
+sf::Vector2<int> Token::getPosition() const
 {
 	return position;
 }
 
-Ownership Token::getOwner()
+Ownership Token::getOwner() const
 {
 	return owner;
+}
+
+const sf::CircleShape Token::getShape() const
+{
+	return *shape;
+}
+
+const sf::RectangleShape Token::getBackground() const
+{
+	return *background;
+}
+
+void Token::setFilled(bool newState)
+{
+	filled = newState;
 }

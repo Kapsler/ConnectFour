@@ -6,16 +6,20 @@ class Token
 {
 public:
 	Token(sf::Vector2<float> position);
+	Token(const Token &other);
 	~Token();
 
 	void Render(sf::RenderWindow* window);
 	void setSelected(bool state);
-	bool isFilled();
+	bool isFilled() const;
 	void SetOwnership(Ownership player);
 	void setRow(int row);
 	void SetColumn(int column);
-	sf::Vector2<int> getPosition();
-	Ownership getOwner();
+	sf::Vector2<int> getPosition() const;
+	Ownership getOwner() const;
+	const sf::CircleShape getShape() const;
+	const sf::RectangleShape getBackground() const;
+	void setFilled(bool newState);
 
 private:
 	sf::CircleShape* shape;

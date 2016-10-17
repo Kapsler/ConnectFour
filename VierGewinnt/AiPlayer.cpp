@@ -1,4 +1,5 @@
 #include "AiPlayer.h"
+#include "Heuristik.h"
 
 AiPlayer::AiPlayer()
 {
@@ -11,7 +12,7 @@ AiPlayer::~AiPlayer()
 
 bool AiPlayer::MakeMove(sf::RenderWindow* window, Board* board)
 {
-	for(int i = 0; i < 7; i++)
+	for(int i = 0; i < 7; ++i)
 	{
 		if(board->hasEmptyToken(i))
 		{
@@ -20,7 +21,6 @@ bool AiPlayer::MakeMove(sf::RenderWindow* window, Board* board)
 			move->PutTokenInSlot(i, owner);
 
 			nextMoves.push_back(move);
-			break;
 		}
 	}
 
@@ -48,7 +48,14 @@ bool AiPlayer::MakeMove(sf::RenderWindow* window, Board* board)
 
 int AiPlayer::evaluate(Board* board)
 {
-	return 1;
+	int score = 0;
+
+	score += CheckHorizontals(board);
+	score += CheckVerticals(board);
+	score += CheckDiagonals(board);
+	score += CheckAntidiagonals(board);
+
+	return score;
 }
 
 
@@ -66,34 +73,66 @@ void AiPlayer::ClearNextMoves()
 int AiPlayer::CheckHorizontals(Board* board)
 {
 	auto boardArray = board->getArray();
-	int selfCounter = 0;
-	int opponentCounter = 0;
+	int score = 0;
+
 	for (int i = 5; i >= 0; --i)
 	{
-		if(	boardArray[0][0]->getOwner() == owner &&
-			boardArray[0][1]->getOwner() == owner &&
-			boardArray[0][2]->getOwner() == owner &&
-			boardArray[0][3]->getOwner() == owner)
-		{
-			
-		}
+		Heuristik temp1(boardArray[0][i]->getOwner(), boardArray[1][i]->getOwner(), boardArray[2][i]->getOwner(), boardArray[3][i]->getOwner(), owner);
+		Heuristik temp2(boardArray[1][i]->getOwner(), boardArray[2][i]->getOwner(), boardArray[3][i]->getOwner(), boardArray[4][i]->getOwner(), owner);
+		Heuristik temp3(boardArray[2][i]->getOwner(), boardArray[3][i]->getOwner(), boardArray[4][i]->getOwner(), boardArray[5][i]->getOwner(), owner);
+		Heuristik temp4(boardArray[3][i]->getOwner(), boardArray[4][i]->getOwner(), boardArray[5][i]->getOwner(), boardArray[6][i]->getOwner(), owner);
 
-
-
+		score += temp1.getHeuristik() + temp2.getHeuristik() + temp3.getHeuristik() + temp4.getHeuristik();
+	
 	}
+	return score;
 }
 
 int AiPlayer::CheckVerticals(Board* board)
 {
-	return 0;
+	auto boardArray = board->getArray();
+	int score = 0;
+
+	for (int i = 0; i < 7; ++i)
+	{
+		Heuristik temp1(boardArray[i][5]->getOwner(), boardArray[i][4]->getOwner(), boardArray[i][3]->getOwner(), boardArray[i][2]->getOwner(), owner);
+		Heuristik temp2(boardArray[i][4]->getOwner(), boardArray[i][3]->getOwner(), boardArray[i][2]->getOwner(), boardArray[i][1]->getOwner(), owner);
+		Heuristik temp3(boardArray[i][3]->getOwner(), boardArray[i][2]->getOwner(), boardArray[i][1]->getOwner(), boardArray[i][0]->getOwner(), owner);
+	
+		score += temp1.getHeuristik() + temp2.getHeuristik() + temp3.getHeuristik();
+
+	}
+	return score;
 }
 
 int AiPlayer::CheckDiagonals(Board* board)
 {
-	return 0;
+	auto boardArray = board->getArray();
+	int score = 0;
+
+	for (int i = 0; i < 4; ++i)
+	{
+		Heuristik temp1(boardArray[i][5]->getOwner(), boardArray[i+1][4]->getOwner(), boardArray[i+2][3]->getOwner(), boardArray[i+3][2]->getOwner(), owner);
+		Heuristik temp2(boardArray[i][4]->getOwner(), boardArray[i+1][3]->getOwner(), boardArray[i+2][2]->getOwner(), boardArray[i+3][1]->getOwner(), owner);
+		Heuristik temp3(boardArray[i][3]->getOwner(), boardArray[i+1][2]->getOwner(), boardArray[i+2][1]->getOwner(), boardArray[i+3][0]->getOwner(), owner);
+
+		score += temp1.getHeuristik() + temp2.getHeuristik() + temp3.getHeuristik();
+	}
+	return score;
 }
 
 int AiPlayer::CheckAntidiagonals(Board* board)
 {
-	return 0;
+	auto boardArray = board->getArray();
+	int score = 0;
+
+	for (int i = 0; i < 4; ++i)
+	{
+		Heuristik temp1(boardArray[i][0]->getOwner(), boardArray[i + 1][1]->getOwner(), boardArray[i + 2][2]->getOwner(), boardArray[i + 3][3]->getOwner(), owner);
+		Heuristik temp2(boardArray[i][1]->getOwner(), boardArray[i + 1][2]->getOwner(), boardArray[i + 2][3]->getOwner(), boardArray[i + 3][4]->getOwner(), owner);
+		Heuristik temp3(boardArray[i][2]->getOwner(), boardArray[i + 1][3]->getOwner(), boardArray[i + 2][4]->getOwner(), boardArray[i + 3][5]->getOwner(), owner);
+
+		score += temp1.getHeuristik() + temp2.getHeuristik() + temp3.getHeuristik();
+	}
+	return score;
 }
