@@ -20,17 +20,15 @@ int Heuristik::getHeuristik()
 	int ownCount = std::count(tokens.begin(), tokens.end(), target);
 	int emptyCount = std::count(tokens.begin(), tokens.end(), NONE);
 
-	DebugOutput();
-
 	if (ownCount == 4) score += 1000000;
-	if (ownCount == 3 && emptyCount == 1) score += 10000;
-	if (ownCount == 2 && emptyCount == 2) score += 1000;
+	if (ownCount == 3 && emptyCount == 1) score += 10;
+	if (ownCount == 2 && emptyCount == 2) score += 1;
 
 	//Konter von Gegner 3er
-	if (ownCount == 0 && emptyCount == 0) score += 900000;
+	if (ownCount == 1 && emptyCount == 0) score += 900;
 
-	if (ownCount == 0 && emptyCount == 2) score += -1000;
-	if (ownCount == 0 && emptyCount == 1) score += -10000;
+	if (ownCount == 0 && emptyCount == 2) score += -1;
+	if (ownCount == 0 && emptyCount == 1) score += -10;
 	if (ownCount == 0 && emptyCount == 0) score += -1000000;
 
 	return score;

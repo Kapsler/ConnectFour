@@ -12,11 +12,11 @@ public:
 
 private:
 	int evaluate(Board* board);
-	std::vector<Board*> nextMoves;
-	void ClearNextMoves();
 	int CheckHorizontals(Board* board);
 	int CheckVerticals(Board* board);
 	int CheckDiagonals(Board* board);
 	int CheckAntidiagonals(Board* board);
+	int NegaMax(Board* board, int depth, int color);
+	int FindBestMove(Board* board);
 
 };

@@ -19,8 +19,8 @@ Token::Token(sf::Vector2<float> pos)
 
 Token::Token(const Token& other)
 {
-	shape = new sf::CircleShape(other.getShape());
-	background = new sf::RectangleShape(other.getBackground());
+	//shape = new sf::CircleShape(other.getShape());
+	//background = new sf::RectangleShape(other.getBackground());
 	filled = other.isFilled();
 	owner = other.getOwner();
 	position = other.getPosition();

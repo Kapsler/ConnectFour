@@ -1,5 +1,6 @@
 #include "AiPlayer.h"
 #include "Heuristik.h"
+#include <iostream>
 
 AiPlayer::AiPlayer()
 {
@@ -12,36 +13,10 @@ AiPlayer::~AiPlayer()
 
 bool AiPlayer::MakeMove(sf::RenderWindow* window, Board* board)
 {
-	for(int i = 0; i < 7; ++i)
-	{
-		if(board->hasEmptyToken(i))
-		{
-			Board* move = new Board(*board);
-
-			move->PutTokenInSlot(i, owner);
-
-			nextMoves.push_back(move);
-		}
-	}
-
-	//Evaluate Boards
-	int highestValueSlot = nextMoves.at(0)->getLastPlayedSlot();
-	int highestValue = evaluate(nextMoves.at(0));
-	for(int i = 1; i < nextMoves.size(); i++)
-	{
-		int newValue = evaluate(nextMoves.at(i));
-		//Get highest Board
-		if(newValue > highestValue)
-		{
-			highestValue = newValue;
-			highestValueSlot = nextMoves.at(i)->getLastPlayedSlot();
-		}
-	}
+	int bestMove = FindBestMove(board);
 
 	//Put token in best slot
-	board->PutTokenInSlot(highestValueSlot, owner);
-
-	ClearNextMoves();
+	board->PutTokenInSlot(bestMove, owner);
 
 	return true;
 }
@@ -56,18 +31,6 @@ int AiPlayer::evaluate(Board* board)
 	score += CheckAntidiagonals(board);
 
 	return score;
-}
-
-
-
-void AiPlayer::ClearNextMoves()
-{
-	for(auto i : nextMoves)
-	{
-		delete i;
-	}
-
-	nextMoves.clear();
 }
 
 int AiPlayer::CheckHorizontals(Board* board)
@@ -135,4 +98,88 @@ int AiPlayer::CheckAntidiagonals(Board* board)
 		score += temp1.getHeuristik() + temp2.getHeuristik() + temp3.getHeuristik();
 	}
 	return score;
+}
+
+int AiPlayer::NegaMax(Board* board, int depth, int color)
+{
+	std::vector<Board*> nextMoves;
+
+	int heuristik = evaluate(board);
+
+	if(depth == 0 || board->BoardIsFull())
+	{
+		return color * heuristik;
+	}
+
+	for (int i = 0; i < 7; ++i)
+	{
+		if (board->hasEmptyToken(i))
+		{
+			Board* move = new Board(*board);
+
+			if(color == 1)
+			{
+				move->PutTokenInSlot(i, owner);
+			} else
+			{
+				move->PutTokenInSlot(i, PLAYER2);
+			}
+			
+			nextMoves.push_back(move);
+		}
+	}
+
+	int bestValue = -10000000;
+	for(int i = 0; i < nextMoves.size(); ++i)
+	{
+		int score = -NegaMax(nextMoves.at(i), depth - 1, -color);
+		bestValue = std::max(bestValue, score);
+	}
+
+	//Clear Moves
+	for(auto i : nextMoves)
+	{
+		delete i;
+	}
+
+	return bestValue;
+}
+
+int AiPlayer::FindBestMove(Board* board)
+{
+	std::vector<Board*> nextMoves;
+
+	for (int i = 0; i < 7; ++i)
+	{
+		if (board->hasEmptyToken(i))
+		{
+			Board* move = new Board(*board);
+
+			move->PutTokenInSlot(i, owner);
+
+			nextMoves.push_back(move);
+		}
+	}
+
+	//Evaluate Boards
+	int highestValueSlot = nextMoves.at(0)->getLastPlayedSlot();
+	int highestValue = NegaMax(nextMoves.at(0),5,1);
+	for (int i = 1; i < nextMoves.size(); i++)
+	{
+		int newValue = NegaMax(nextMoves.at(i),5,1);
+		//Get highest Board
+		if (newValue > highestValue)
+		{
+			highestValue = newValue;
+			highestValueSlot = nextMoves.at(i)->getLastPlayedSlot();
+		}
+	}
+
+	for(auto i : nextMoves)
+	{
+		delete i;
+	}
+	nextMoves.clear();
+
+	return highestValueSlot;
 }
