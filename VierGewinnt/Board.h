@@ -15,7 +15,7 @@ public:
 	int SelectSlot(int oldSlot, int newSlot);
 	bool FourInARow(sf::Vector2<int> token, Ownership player);
 	bool BoardIsFull();
-	bool getWin();
+	const bool getWin() const;
 	Ownership getOwnerOfToken(sf::Vector2<int> pos);
 	bool hasEmptyToken(int slotNumber);
 	int getLastPlayedSlot();

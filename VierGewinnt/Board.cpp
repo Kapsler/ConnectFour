@@ -27,17 +27,14 @@ Board::Board(int columns, int rows)
 
 Board::Board(const Board& other)
 {
-	sf::Vector2<float> position(0.0f, 0.0f);
 	std::vector<Token*> slot;
-	
+	auto boardarray = other.getArray();
+
 	for (auto i = 0; i < other.board.size(); ++i)
 	{
 		for (auto j = 0; j < other.board[i].size(); ++j)
 		{
-			Token* token = new Token(position);
-			token->setRow(other.getArray()[i][j]->getPosition().y);
-			token->SetColumn(other.getArray()[i][j]->getPosition().x);
-			token->SetOwnership(other.getArray()[i][j]->getOwner());
+			Token* token = new Token(*boardarray[i][j]);
 			slot.push_back(token);
 		}
 		board.push_back(slot);
@@ -271,7 +268,7 @@ bool Board::BoardIsFull()
 	return true;
 }
 
-bool Board::getWin()
+const bool Board::getWin() const
 {
 	return win;
 }

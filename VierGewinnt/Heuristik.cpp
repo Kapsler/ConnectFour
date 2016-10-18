@@ -21,12 +21,12 @@ int Heuristik::getHeuristik()
 	int emptyCount = std::count(tokens.begin(), tokens.end(), NONE);
 
 	if (ownCount == 4) score += 1000000;
-	if (ownCount == 3 && emptyCount == 1) score += 10;
-	if (ownCount == 2 && emptyCount == 2) score += 2;
-	if (ownCount == 1 && emptyCount == 3) score += 1;
+	if (ownCount == 3 && emptyCount == 1) score += 100;
+	if (ownCount == 2 && emptyCount == 2) score += 10;
+	if (ownCount == 1 && emptyCount == 3) score += 0;
 
 	//Konter von Gegner 3er
-	if (ownCount == 1 && emptyCount == 0) score += 10;
+	if (ownCount == 1 && emptyCount == 0) score += 150;
 
 	if (ownCount == 0 && emptyCount == 2) score += -10;
 	if (ownCount == 0 && emptyCount == 1) score += -100;

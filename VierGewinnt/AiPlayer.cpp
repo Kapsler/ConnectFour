@@ -102,8 +102,8 @@ int AiPlayer::CheckAntidiagonals(Board* board)
 
 int AiPlayer::NegaMax(Board* board, int depth, int alpha, int beta, int color)
 {
-
-	if (depth == 0 || board->BoardIsFull())
+	bool winning = board->getWin();
+	if (depth == 0 || board->BoardIsFull() || winning)
 	{
 		//DebugBoard(board);
 		int heuristik = evaluate(board);
@@ -172,10 +172,10 @@ int AiPlayer::FindBestMove(Board* board)
 
 	//Evaluate Boards
 	int highestValueSlot = nextMoves.at(0)->getLastPlayedSlot();
-	int highestValue = NegaMax(nextMoves.at(0), 5, -1000000, 1000000,1);
+	int highestValue = NegaMax(nextMoves.at(0), 7, -1000000, 1000000, 1);
 	for (int i = 1; i < nextMoves.size(); i++)
 	{
-		int newValue = NegaMax(nextMoves.at(i), 5, -1000000, 1000000, 1);
+		int newValue = NegaMax(nextMoves.at(i), 7, -1000000, 1000000, 1);
 		//Get highest Board
 		if (newValue > highestValue)
 		{
@@ -184,14 +184,16 @@ int AiPlayer::FindBestMove(Board* board)
 		}
 	}
 
+	std::cout << "Highest Value:" << highestValue << std::endl;
+	DebugBoard(nextMoves.at(highestValueSlot));
+		//std::cout << "Highest Slot:" << highestValueSlot << std::endl;
+
 	for(auto i : nextMoves)
 	{
 		delete i;
 	}
 	nextMoves.clear();
 
-	//std::cout << "Highest Value:" << highestValue << std::endl;
-	//std::cout << "Highest Slot:" << highestValueSlot << std::endl;
 	return highestValueSlot;
 }
 

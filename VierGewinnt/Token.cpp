@@ -19,8 +19,8 @@ Token::Token(sf::Vector2<float> pos)
 
 Token::Token(const Token& other)
 {
-	//shape = new sf::CircleShape(other.getShape());
-	//background = new sf::RectangleShape(other.getBackground());
+	shape = nullptr;
+	background = nullptr;
 	filled = other.isFilled();
 	owner = other.getOwner();
 	position = other.getPosition();
@@ -61,14 +61,23 @@ void Token::SetOwnership(Ownership player)
 	switch (player)
 	{
 	case NONE:
-		shape->setFillColor(sf::Color::White);
+		if(shape)
+		{
+			shape->setFillColor(sf::Color::White);
+		}
 		break;
 	case PLAYER1:
+		if (shape)
+		{
 		shape->setFillColor(sf::Color::Yellow);
+		}
 		filled = true;
 		break;
 	case PLAYER2:
+		if (shape)
+		{
 		shape->setFillColor(sf::Color::Red);
+		}
 		filled = true;
 		break;
 	default:
