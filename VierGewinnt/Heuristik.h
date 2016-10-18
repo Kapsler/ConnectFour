@@ -5,15 +5,15 @@
 class Heuristik
 {
 public:	
-	Heuristik(Ownership first, Ownership second, Ownership third, Ownership fourth, Ownership self);
+	Heuristik(Ownership first, Ownership second, Ownership third, Ownership fourth, Ownership self, Ownership enemy);
 	~Heuristik();
 
 	int getHeuristik();
 
 private:
-	void DebugOutput();
 
-	std::vector<Ownership> tokens;
+	Ownership* tokens;
 	Ownership target;
+	Ownership enemy;
 
 };

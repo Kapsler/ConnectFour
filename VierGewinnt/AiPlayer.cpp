@@ -41,10 +41,10 @@ int AiPlayer::CheckHorizontals(Board* board)
 
 	for (int i = 5; i >= 0; --i)
 	{
-		Heuristik temp1(boardArray[0][i]->getOwner(), boardArray[1][i]->getOwner(), boardArray[2][i]->getOwner(), boardArray[3][i]->getOwner(), owner);
-		Heuristik temp2(boardArray[1][i]->getOwner(), boardArray[2][i]->getOwner(), boardArray[3][i]->getOwner(), boardArray[4][i]->getOwner(), owner);
-		Heuristik temp3(boardArray[2][i]->getOwner(), boardArray[3][i]->getOwner(), boardArray[4][i]->getOwner(), boardArray[5][i]->getOwner(), owner);
-		Heuristik temp4(boardArray[3][i]->getOwner(), boardArray[4][i]->getOwner(), boardArray[5][i]->getOwner(), boardArray[6][i]->getOwner(), owner);
+		Heuristik temp1(boardArray[0][i]->getOwner(), boardArray[1][i]->getOwner(), boardArray[2][i]->getOwner(), boardArray[3][i]->getOwner(), owner, enemy);
+		Heuristik temp2(boardArray[1][i]->getOwner(), boardArray[2][i]->getOwner(), boardArray[3][i]->getOwner(), boardArray[4][i]->getOwner(), owner, enemy);
+		Heuristik temp3(boardArray[2][i]->getOwner(), boardArray[3][i]->getOwner(), boardArray[4][i]->getOwner(), boardArray[5][i]->getOwner(), owner, enemy);
+		Heuristik temp4(boardArray[3][i]->getOwner(), boardArray[4][i]->getOwner(), boardArray[5][i]->getOwner(), boardArray[6][i]->getOwner(), owner, enemy);
 
 		score += temp1.getHeuristik() + temp2.getHeuristik() + temp3.getHeuristik() + temp4.getHeuristik();
 	
@@ -59,9 +59,9 @@ int AiPlayer::CheckVerticals(Board* board)
 
 	for (int i = 0; i < 7; ++i)
 	{
-		Heuristik temp1(boardArray[i][5]->getOwner(), boardArray[i][4]->getOwner(), boardArray[i][3]->getOwner(), boardArray[i][2]->getOwner(), owner);
-		Heuristik temp2(boardArray[i][4]->getOwner(), boardArray[i][3]->getOwner(), boardArray[i][2]->getOwner(), boardArray[i][1]->getOwner(), owner);
-		Heuristik temp3(boardArray[i][3]->getOwner(), boardArray[i][2]->getOwner(), boardArray[i][1]->getOwner(), boardArray[i][0]->getOwner(), owner);
+		Heuristik temp1(boardArray[i][5]->getOwner(), boardArray[i][4]->getOwner(), boardArray[i][3]->getOwner(), boardArray[i][2]->getOwner(), owner, enemy);
+		Heuristik temp2(boardArray[i][4]->getOwner(), boardArray[i][3]->getOwner(), boardArray[i][2]->getOwner(), boardArray[i][1]->getOwner(), owner, enemy);
+		Heuristik temp3(boardArray[i][3]->getOwner(), boardArray[i][2]->getOwner(), boardArray[i][1]->getOwner(), boardArray[i][0]->getOwner(), owner, enemy);
 	
 		score += temp1.getHeuristik() + temp2.getHeuristik() + temp3.getHeuristik();
 
@@ -76,9 +76,9 @@ int AiPlayer::CheckDiagonals(Board* board)
 
 	for (int i = 0; i < 4; ++i)
 	{
-		Heuristik temp1(boardArray[i][5]->getOwner(), boardArray[i+1][4]->getOwner(), boardArray[i+2][3]->getOwner(), boardArray[i+3][2]->getOwner(), owner);
-		Heuristik temp2(boardArray[i][4]->getOwner(), boardArray[i+1][3]->getOwner(), boardArray[i+2][2]->getOwner(), boardArray[i+3][1]->getOwner(), owner);
-		Heuristik temp3(boardArray[i][3]->getOwner(), boardArray[i+1][2]->getOwner(), boardArray[i+2][1]->getOwner(), boardArray[i+3][0]->getOwner(), owner);
+		Heuristik temp1(boardArray[i][5]->getOwner(), boardArray[i+1][4]->getOwner(), boardArray[i+2][3]->getOwner(), boardArray[i+3][2]->getOwner(), owner, enemy);
+		Heuristik temp2(boardArray[i][4]->getOwner(), boardArray[i+1][3]->getOwner(), boardArray[i+2][2]->getOwner(), boardArray[i+3][1]->getOwner(), owner, enemy);
+		Heuristik temp3(boardArray[i][3]->getOwner(), boardArray[i+1][2]->getOwner(), boardArray[i+2][1]->getOwner(), boardArray[i+3][0]->getOwner(), owner, enemy);
 
 		score += temp1.getHeuristik() + temp2.getHeuristik() + temp3.getHeuristik();
 	}
@@ -92,9 +92,9 @@ int AiPlayer::CheckAntidiagonals(Board* board)
 
 	for (int i = 0; i < 4; ++i)
 	{
-		Heuristik temp1(boardArray[i][0]->getOwner(), boardArray[i + 1][1]->getOwner(), boardArray[i + 2][2]->getOwner(), boardArray[i + 3][3]->getOwner(), owner);
-		Heuristik temp2(boardArray[i][1]->getOwner(), boardArray[i + 1][2]->getOwner(), boardArray[i + 2][3]->getOwner(), boardArray[i + 3][4]->getOwner(), owner);
-		Heuristik temp3(boardArray[i][2]->getOwner(), boardArray[i + 1][3]->getOwner(), boardArray[i + 2][4]->getOwner(), boardArray[i + 3][5]->getOwner(), owner);
+		Heuristik temp1(boardArray[i][0]->getOwner(), boardArray[i + 1][1]->getOwner(), boardArray[i + 2][2]->getOwner(), boardArray[i + 3][3]->getOwner(), owner, enemy);
+		Heuristik temp2(boardArray[i][1]->getOwner(), boardArray[i + 1][2]->getOwner(), boardArray[i + 2][3]->getOwner(), boardArray[i + 3][4]->getOwner(), owner, enemy);
+		Heuristik temp3(boardArray[i][2]->getOwner(), boardArray[i + 1][3]->getOwner(), boardArray[i + 2][4]->getOwner(), boardArray[i + 3][5]->getOwner(), owner, enemy);
 
 		score += temp1.getHeuristik() + temp2.getHeuristik() + temp3.getHeuristik();
 	}
