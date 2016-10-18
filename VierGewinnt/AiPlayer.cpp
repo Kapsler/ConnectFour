@@ -2,9 +2,10 @@
 #include "Heuristik.h"
 #include <iostream>
 
-AiPlayer::AiPlayer()
+AiPlayer::AiPlayer(Ownership self, Ownership enemy)
 {
-	owner = PLAYER2;
+	owner = self;
+	this->enemy = enemy;
 }
 
 AiPlayer::~AiPlayer()
@@ -124,7 +125,7 @@ int AiPlayer::NegaMax(Board* board, int depth, int alpha, int beta, int color)
 				move->PutTokenInSlot(i, owner);
 			} else
 			{
-				move->PutTokenInSlot(i, PLAYER1);
+				move->PutTokenInSlot(i, enemy);
 			}
 			
 			nextMoves.push_back(move);
@@ -134,7 +135,7 @@ int AiPlayer::NegaMax(Board* board, int depth, int alpha, int beta, int color)
 	int bestValue = -10000000;
 	for(int i = 0; i < nextMoves.size(); ++i)
 	{
-		int score = -1 * NegaMax(nextMoves.at(i), depth - 1, -beta, -alpha, -color);
+		int score =  -1 * NegaMax(nextMoves.at(i), depth - 1, -beta, -alpha, -color);
 		bestValue = std::max(bestValue, score);
 		//Alpha Beta Pruning
 		alpha = std::max(alpha, score);
@@ -173,10 +174,10 @@ int AiPlayer::FindBestMove(Board* board)
 	int debugBoardIndex = 0;
 	//Evaluate Boards
 	int highestValueSlot = nextMoves.at(0)->getLastPlayedSlot();
-	int highestValue = NegaMax(nextMoves.at(0), 7, -1000000, 1000000, 1);
+	int highestValue = NegaMax(nextMoves.at(0), 7, -10000000, 10000000, 1);
 	for (int i = 1; i < nextMoves.size(); i++)
 	{
-		int newValue = NegaMax(nextMoves.at(i), 7, -1000000, 1000000, 1);
+		int newValue = NegaMax(nextMoves.at(i), 7, -10000000, 10000000, 1);
 		//Get highest Board
 		if (newValue > highestValue)
 		{

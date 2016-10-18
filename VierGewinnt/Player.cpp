@@ -3,6 +3,7 @@
 Player::Player()
 {
 	owner = NONE;
+	enemy = NONE;
 }
 
 Player::~Player()

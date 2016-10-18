@@ -5,7 +5,7 @@
 class AiPlayer : public Player
 {
 public:
-	AiPlayer();
+	AiPlayer(Ownership self, Ownership enemy);
 	~AiPlayer();
 
 	bool MakeMove(sf::RenderWindow* window, Board* board);

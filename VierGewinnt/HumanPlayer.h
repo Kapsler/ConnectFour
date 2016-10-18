@@ -5,7 +5,7 @@
 class HumanPlayer : public Player
 {
 public:
-	HumanPlayer();
+	HumanPlayer(Ownership self, Ownership enemy);
 	~HumanPlayer();
 
 	virtual bool MakeMove(sf::RenderWindow* window, Board* board) override;

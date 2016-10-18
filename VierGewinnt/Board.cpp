@@ -311,7 +311,7 @@ bool Board::PutTokenInSlot(int slot, Ownership player)
 			(*i)->SetOwnership(player);
 			lastPlayedToken = (*i)->getPosition();
 
-			if (FourInARow(lastPlayedToken, player) || BoardIsFull())
+			if (FourInARow(lastPlayedToken, PLAYER1) || BoardIsFull() || FourInARow(lastPlayedToken, PLAYER2))
 			{
 				win = true;
 			}

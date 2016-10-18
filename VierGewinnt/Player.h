@@ -11,7 +11,7 @@ public:
 
 	virtual bool MakeMove(sf::RenderWindow* window, Board* board) = 0;
 	virtual Ownership getIdentifier();
-	Ownership owner;
+	Ownership owner, enemy;
 
 private:
 };

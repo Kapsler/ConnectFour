@@ -1,9 +1,10 @@
 #include "HumanPlayer.h"
 #include <iostream>
 
-HumanPlayer::HumanPlayer()
+HumanPlayer::HumanPlayer(Ownership self, Ownership enemy)
 {
-	owner = PLAYER1;
+	owner = self;
+	this->enemy = enemy;
 	selectedSlot = 0;
 }
 
