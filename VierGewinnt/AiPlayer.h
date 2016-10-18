@@ -16,7 +16,7 @@ private:
 	int CheckVerticals(Board* board);
 	int CheckDiagonals(Board* board);
 	int CheckAntidiagonals(Board* board);
-	int NegaMax(Board* board, int depth, int color);
+	int NegaMax(Board* board, int depth, int alpha, int beta, int color);
 	int FindBestMove(Board* board);
 
 	void DebugBoard(Board* board);

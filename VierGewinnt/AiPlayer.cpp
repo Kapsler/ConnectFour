@@ -100,7 +100,7 @@ int AiPlayer::CheckAntidiagonals(Board* board)
 	return score;
 }
 
-int AiPlayer::NegaMax(Board* board, int depth, int color)
+int AiPlayer::NegaMax(Board* board, int depth, int alpha, int beta, int color)
 {
 
 	if (depth == 0 || board->BoardIsFull())
@@ -134,8 +134,14 @@ int AiPlayer::NegaMax(Board* board, int depth, int color)
 	int bestValue = -10000000;
 	for(int i = 0; i < nextMoves.size(); ++i)
 	{
-		int score = -1 * NegaMax(nextMoves.at(i), depth - 1, -color);
+		int score = -1 * NegaMax(nextMoves.at(i), depth - 1, -beta, -alpha, -color);
 		bestValue = std::max(bestValue, score);
+		//Alpha Beta Pruning
+		alpha = std::max(alpha, score);
+		if(alpha >= beta)
+		{
+			break;
+		}
 	}
 
 	//std::cout << "Best Child:" << bestValue << std::endl;
@@ -166,10 +172,10 @@ int AiPlayer::FindBestMove(Board* board)
 
 	//Evaluate Boards
 	int highestValueSlot = nextMoves.at(0)->getLastPlayedSlot();
-	int highestValue = NegaMax(nextMoves.at(0),4,1);
+	int highestValue = NegaMax(nextMoves.at(0), 5, -1000000, 1000000,1);
 	for (int i = 1; i < nextMoves.size(); i++)
 	{
-		int newValue = NegaMax(nextMoves.at(i),4,1);
+		int newValue = NegaMax(nextMoves.at(i), 5, -1000000, 1000000, 1);
 		//Get highest Board
 		if (newValue > highestValue)
 		{
