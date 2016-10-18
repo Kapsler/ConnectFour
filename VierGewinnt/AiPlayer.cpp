@@ -102,14 +102,16 @@ int AiPlayer::CheckAntidiagonals(Board* board)
 
 int AiPlayer::NegaMax(Board* board, int depth, int color)
 {
-	std::vector<Board*> nextMoves;
 
-	int heuristik = evaluate(board);
-
-	if(depth == 0 || board->BoardIsFull())
+	if (depth == 0 || board->BoardIsFull())
 	{
+		//DebugBoard(board);
+		int heuristik = evaluate(board);
+		//std::cout << "Heuristik:" << heuristik << std::endl << std::endl;
 		return color * heuristik;
 	}
+
+	std::vector<Board*> nextMoves;
 
 	for (int i = 0; i < 7; ++i)
 	{
@@ -117,12 +119,12 @@ int AiPlayer::NegaMax(Board* board, int depth, int color)
 		{
 			Board* move = new Board(*board);
 
-			if(color == 1)
+			if(color == -1)
 			{
 				move->PutTokenInSlot(i, owner);
 			} else
 			{
-				move->PutTokenInSlot(i, PLAYER2);
+				move->PutTokenInSlot(i, PLAYER1);
 			}
 			
 			nextMoves.push_back(move);
@@ -132,10 +134,11 @@ int AiPlayer::NegaMax(Board* board, int depth, int color)
 	int bestValue = -10000000;
 	for(int i = 0; i < nextMoves.size(); ++i)
 	{
-		int score = -NegaMax(nextMoves.at(i), depth - 1, -color);
+		int score = -1 * NegaMax(nextMoves.at(i), depth - 1, -color);
 		bestValue = std::max(bestValue, score);
 	}
 
+	//std::cout << "Best Child:" << bestValue << std::endl;
 	//Clear Moves
 	for(auto i : nextMoves)
 	{
@@ -163,10 +166,10 @@ int AiPlayer::FindBestMove(Board* board)
 
 	//Evaluate Boards
 	int highestValueSlot = nextMoves.at(0)->getLastPlayedSlot();
-	int highestValue = NegaMax(nextMoves.at(0),5,1);
+	int highestValue = NegaMax(nextMoves.at(0),4,1);
 	for (int i = 1; i < nextMoves.size(); i++)
 	{
-		int newValue = NegaMax(nextMoves.at(i),5,1);
+		int newValue = NegaMax(nextMoves.at(i),4,1);
 		//Get highest Board
 		if (newValue > highestValue)
 		{
@@ -181,5 +184,23 @@ int AiPlayer::FindBestMove(Board* board)
 	}
 	nextMoves.clear();
 
+	//std::cout << "Highest Value:" << highestValue << std::endl;
+	//std::cout << "Highest Slot:" << highestValueSlot << std::endl;
 	return highestValueSlot;
+}
+
+void AiPlayer::DebugBoard(Board* board)
+{
+	auto boardarray = board->getArray();
+
+	for(int i = 0; i < 6; ++i)
+	{
+		for(int j = 0; j < 7; ++j)
+		{
+			std::cout << boardarray.at(j).at(i)->getOwner();
+
+		}
+		std::cout << std::endl;
+	}
+
 }

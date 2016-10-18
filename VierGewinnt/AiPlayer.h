@@ -19,4 +19,6 @@ private:
 	int NegaMax(Board* board, int depth, int color);
 	int FindBestMove(Board* board);
 
+	void DebugBoard(Board* board);
+
 };
