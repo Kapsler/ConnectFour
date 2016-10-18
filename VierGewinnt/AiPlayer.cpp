@@ -170,6 +170,7 @@ int AiPlayer::FindBestMove(Board* board)
 		}
 	}
 
+	int debugBoardIndex = 0;
 	//Evaluate Boards
 	int highestValueSlot = nextMoves.at(0)->getLastPlayedSlot();
 	int highestValue = NegaMax(nextMoves.at(0), 7, -1000000, 1000000, 1);
@@ -181,12 +182,13 @@ int AiPlayer::FindBestMove(Board* board)
 		{
 			highestValue = newValue;
 			highestValueSlot = nextMoves.at(i)->getLastPlayedSlot();
+			debugBoardIndex = i;
 		}
 	}
 
 	std::cout << "Highest Value:" << highestValue << std::endl;
-	DebugBoard(nextMoves.at(highestValueSlot));
-		//std::cout << "Highest Slot:" << highestValueSlot << std::endl;
+	std::cout << "Highest Slot:" << highestValueSlot << std::endl;
+	DebugBoard(nextMoves.at(debugBoardIndex));
 
 	for(auto i : nextMoves)
 	{

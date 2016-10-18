@@ -23,7 +23,7 @@ int Heuristik::getHeuristik()
 	if (ownCount == 4) score += 1000000;
 	if (ownCount == 3 && emptyCount == 1) score += 100;
 	if (ownCount == 2 && emptyCount == 2) score += 10;
-	if (ownCount == 1 && emptyCount == 3) score += 0;
+	if (ownCount == 1 && emptyCount == 3) score += 1;
 
 	//Konter von Gegner 3er
 	if (ownCount == 1 && emptyCount == 0) score += 150;
