@@ -8,16 +8,17 @@ public:
 	AiPlayer(Ownership self, Ownership enemy);
 	~AiPlayer();
 
-	bool MakeMove(sf::RenderWindow* window, Board* board);
+	bool MakeMove(sf::RenderWindow* window, Board* board) override;
 
 private:
-	int evaluate(Board* board);
-	int CheckHorizontals(Board* board);
-	int CheckVerticals(Board* board);
-	int CheckDiagonals(Board* board);
-	int CheckAntidiagonals(Board* board);
+	int evaluate(Board* board) const;
+	int inline CheckHorizontals(Board* board) const;
+	int inline CheckVerticals(Board* board) const;
+	int inline CheckDiagonals(Board* board) const;
+	int inline CheckAntidiagonals(Board* board) const;
 	int NegaMax(Board* board, int depth, int alpha, int beta, int color);
 	int FindBestMove(Board* board);
+	int inline GetHeuristik(Ownership first, Ownership second, Ownership third, Ownership fourth) const;
 
 	void DebugBoard(Board* board);
 
