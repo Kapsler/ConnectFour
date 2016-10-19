@@ -41,7 +41,6 @@ Board::Board(const Board& other)
 		slot.clear();
 	}
 
-	this->lastPlayedToken = other.lastPlayedToken;
 	this->win = other.win;
 }
 
@@ -291,19 +290,15 @@ bool Board::hasEmptyToken(int slotNumber)
 	return false;
 }
 
-int Board::getLastPlayedSlot()
-{
-	return getLastPlayedToken().x;
-}
 
-sf::Vector2<int> Board::getLastPlayedToken()
-{
-	return lastPlayedToken.at(lastPlayedToken.size() - 1);
-}
-
-const std::vector<std::vector<Token*>> Board::getArray() const
+std::vector<std::vector<Token*>> Board::getArray() const
 {
 	return board;
+}
+
+const std::vector<std::vector<Token*>>* Board::GetArrayPtr() const
+{
+	return &board;
 }
 
 bool Board::removeLastToken(int slot)
@@ -313,7 +308,6 @@ bool Board::removeLastToken(int slot)
 		if ((*i)->isFilled())
 		{
 			(*i)->SetOwnership(NONE);
-			lastPlayedToken.pop_back();
 
 			win = false;
 
@@ -332,9 +326,8 @@ bool Board::PutTokenInSlot(int slot, Ownership player)
 		if (!((*i)->isFilled()))
 		{
 			(*i)->SetOwnership(player);
-			lastPlayedToken.push_back((*i)->getPosition());
 
-			if (FourInARow(getLastPlayedToken(), PLAYER1)|| FourInARow(getLastPlayedToken(), PLAYER2) || BoardIsFull())
+			if (FourInARow((*i)->getPosition(), PLAYER1)|| FourInARow((*i)->getPosition(), PLAYER2) || BoardIsFull())
 			{
 				win = true;
 			}

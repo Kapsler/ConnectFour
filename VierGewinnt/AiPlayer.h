@@ -12,14 +12,14 @@ public:
 
 private:
 	int evaluate(Board* board) const;
-	int inline CheckHorizontals(Board* board) const;
-	int inline CheckVerticals(Board* board) const;
-	int inline CheckDiagonals(Board* board) const;
-	int inline CheckAntidiagonals(Board* board) const;
+	int inline CheckHorizontals(const std::vector<std::vector<Token*>>* boardarray) const;
+	int inline CheckVerticals(const std::vector<std::vector<Token*>>* boardarray) const;
+	int inline CheckDiagonals(const std::vector<std::vector<Token*>>* boardarray) const;
+	int inline CheckAntidiagonals(const std::vector<std::vector<Token*>>* boardarray) const;
 	int NegaMax(Board* board, int depth, int alpha, int beta, int color, int &bestslot);
 	int FindBestMove(Board* board);
 	int inline GetHeuristik(Ownership first, Ownership second, Ownership third, Ownership fourth) const;
 
-	void DebugBoard(Board* board);
+	static void DebugBoard(Board* board);
 
 };

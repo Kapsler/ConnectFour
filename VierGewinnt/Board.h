@@ -18,14 +18,12 @@ public:
 	const bool getWin() const;
 	Ownership getOwnerOfToken(sf::Vector2<int> pos);
 	bool hasEmptyToken(int slotNumber);
-	int getLastPlayedSlot();
-	sf::Vector2<int> getLastPlayedToken();
-	const std::vector<std::vector<Token*>> getArray() const;
+	std::vector<std::vector<Token*>> getArray() const;
+	const std::vector<std::vector<Token*>>* GetArrayPtr() const;
 	bool removeLastToken(int slot);
 
 private:
 	std::vector<std::vector<Token*>> board;
 
-	std::vector<sf::Vector2<int>> lastPlayedToken;
 	bool win;
 };

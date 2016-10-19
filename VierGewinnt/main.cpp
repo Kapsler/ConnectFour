@@ -99,7 +99,8 @@ int main(int argc, char* argv[])
 			winCondition = gameManager->Run(window);
 		} else
 		{
-			sf::Event event;
+			window->close();
+			/*sf::Event event;
 			while (window->pollEvent(event))
 			{
 				if (event.type == sf::Event::Closed)
@@ -113,7 +114,7 @@ int main(int argc, char* argv[])
 						window->close();
 					}
 				}
-			}
+			}*/
 		}
 		gameManager->Render(window);
 
