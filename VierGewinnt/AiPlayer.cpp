@@ -19,6 +19,8 @@ bool AiPlayer::MakeMove(sf::RenderWindow* window, Board* board)
 	//Put token in best slot
 	board->PutTokenInSlot(bestMove, owner);
 
+	DebugBoard(board);
+
 	return true;
 }
 
@@ -92,10 +94,19 @@ int inline AiPlayer::CheckAntidiagonals(Board* board) const
 	return score;
 }
 
-int AiPlayer::NegaMax(Board* board, int depth, int alpha, int beta, int color)
+int AiPlayer::NegaMax(Board* board, int depth, int alpha, int beta, int color, int &bestslot)
 {
 	bool winning = board->getWin();
-	if (depth == 0 || winning)
+	if(winning)
+	{
+		int heuristik = evaluate(board);
+		if(color * heuristik > 0)
+		{
+			std::cout << color * heuristik << std::endl;
+		}
+		return color * heuristik;
+	}
+	if (depth == 0)
 	{
 		//DebugBoard(board);
 		int heuristik = evaluate(board);
@@ -111,28 +122,32 @@ int AiPlayer::NegaMax(Board* board, int depth, int alpha, int beta, int color)
 		{
 			Board* move = new Board(*board);
 
-			if(color == -1)
+			if(color == 1)
 			{
 				move->PutTokenInSlot(i, owner);
 			} else
 			{
 				move->PutTokenInSlot(i, enemy);
 			}
-			
+			//DebugBoard(move);
 			nextMoves.push_back(move);
 		}
 	}
 
-	int bestValue = -10000000;
+	int bestValue = INT_MIN + 1;
 	for(int i = 0; i < nextMoves.size(); ++i)
 	{
-		int score =  -1 * NegaMax(nextMoves.at(i), depth - 1, -beta, -alpha, -color);
-		bestValue = std::max(bestValue, score);
+		int score =  -1 * NegaMax(nextMoves.at(i), depth - 1, -beta, -alpha, -color, bestslot);
+		if(score > bestValue)
+		{
+			bestslot = nextMoves.at(i)->getLastPlayedSlot();
+			bestValue = score;
+		}
 		//Alpha Beta Pruning
 		alpha = std::max(alpha, score);
 		if(alpha >= beta)
 		{
-			break;
+			//break;
 		}
 	}
 
@@ -148,46 +163,13 @@ int AiPlayer::NegaMax(Board* board, int depth, int alpha, int beta, int color)
 
 int AiPlayer::FindBestMove(Board* board)
 {
-	std::vector<Board*> nextMoves;
-
-	for (int i = 0; i < 7; ++i)
-	{
-		if (board->hasEmptyToken(i))
-		{
-			Board* move = new Board(*board);
-
-			move->PutTokenInSlot(i, owner);
-
-			nextMoves.push_back(move);
-		}
-	}
-
-	int debugBoardIndex = 0;
+	
 	//Evaluate Boards
-	int highestValueSlot = nextMoves.at(0)->getLastPlayedSlot();
-	int highestValue = NegaMax(nextMoves.at(0), 10, -10000000, 10000000, 1);
-	for (int i = 1; i < nextMoves.size(); i++)
-	{
-		std::cout << "Checking child path: " << i << std::endl;
-		int newValue = NegaMax(nextMoves.at(i), 10, -10000000, 10000000, 1);
-		//Get highest Board
-		if (newValue > highestValue)
-		{
-			highestValue = newValue;
-			highestValueSlot = nextMoves.at(i)->getLastPlayedSlot();
-			debugBoardIndex = i;
-		}
-	}
+	int highestValueSlot = 0;
+	int highestValue = NegaMax(board, 7, INT_MIN+1, INT_MAX, 1, highestValueSlot);
 
 	std::cout << "Highest Value:" << highestValue << std::endl;
 	std::cout << "Highest Slot:" << highestValueSlot << std::endl;
-	DebugBoard(nextMoves.at(debugBoardIndex));
-
-	for(auto i : nextMoves)
-	{
-		delete i;
-	}
-	nextMoves.clear();
 
 	return highestValueSlot;
 }
@@ -197,69 +179,73 @@ int inline AiPlayer::GetHeuristik(Ownership first, Ownership second, Ownership t
 	int score = 0;
 
 	//XXXX
-	if (first == owner && second == owner && third == owner && fourth == owner) score += 10000000;
+	if (first == owner && second == owner && third == owner && fourth == owner)	score += 1000000;
 
 	//XXX_ || _XXX 
 	if ((first == owner && second == owner && third == owner && fourth == NONE) ||
 		(first == NONE && second == owner && third == owner && fourth == owner))
-		score += 500;
+		score += 1000;
 	//XX_X || X_XX
 	if ((first == owner && second == owner && third == NONE && fourth == owner) ||
 		(first == owner && second == NONE && third == owner && fourth == owner))
-		score += 300;
+		score += 1000;
 
 	//XX__ || __XX || X__X || _XX_
 	if ((first == owner && second == owner && third == NONE && fourth == NONE) ||
 		(first == NONE && second == NONE && third == owner && fourth == owner) ||
 		(first == owner && second == NONE && third == NONE && fourth == owner) ||
+		(first == owner && second == NONE && third == owner && fourth == NONE) ||
+		(first == NONE && second == owner && third == NONE && fourth == owner) ||
 		(first == NONE && second == owner && third == owner && fourth == NONE))
-		score += 150;
+		score += 100;
 
 	//X___ || ___X || _X__ || __X_
 	if ((first == owner && second == NONE && third == NONE && fourth == NONE) ||
 		(first == NONE && second == NONE && third == NONE && fourth == owner) ||
 		(first == NONE && second == NONE && third == owner && fourth == NONE) ||
 		(first == NONE && second == owner && third == NONE && fourth == NONE))
-		score += 100;
+		score += 10;
 
-	//Gegner Konter
-	if ((first == enemy && second == enemy && third == enemy && fourth == owner) ||
-		(first == enemy && second == enemy && third == owner && fourth == enemy) ||
-		(first == enemy && second == owner && third == enemy && fourth == enemy) ||
-		(first == owner && second == enemy && third == enemy && fourth == enemy))
-		score += 1000;
-	//Gegner Konter
-	if ((first == owner && second == owner && third == owner && fourth == enemy) ||
-		(first == owner && second == owner && third == enemy && fourth == owner) ||
-		(first == owner && second == enemy && third == owner && fourth == owner) ||
-		(first == enemy && second == owner && third == owner && fourth == owner))
-		score -= 1000;
+	////Gegner Konter
+	//if ((first == enemy && second == enemy && third == enemy && fourth == owner) ||
+	//	(first == enemy && second == enemy && third == owner && fourth == enemy) ||
+	//	(first == enemy && second == owner && third == enemy && fourth == enemy) ||
+	//	(first == owner && second == enemy && third == enemy && fourth == enemy))
+	//	score += 1000;
+	////Gegner Konter
+	//if ((first == owner && second == owner && third == owner && fourth == enemy) ||
+	//	(first == owner && second == owner && third == enemy && fourth == owner) ||
+	//	(first == owner && second == enemy && third == owner && fourth == owner) ||
+	//	(first == enemy && second == owner && third == owner && fourth == owner))
+	//	score -= 1000;
 
 	//Gegner 1er
 	if ((first == NONE && second == NONE && third == NONE && fourth == enemy) ||
 		(first == NONE && second == NONE && third == enemy && fourth == NONE) ||
 		(first == NONE && second == enemy && third == NONE && fourth == NONE) ||
 		(first == enemy && second == NONE && third == NONE && fourth == NONE))
-		score -= 100;
+		score -= 10;
 
 	//Gegner 2er
 	if ((first == enemy && second == enemy && third == NONE && fourth == NONE) ||
 		(first == NONE && second == NONE && third == enemy && fourth == enemy) ||
 		(first == enemy && second == NONE && third == NONE && fourth == enemy) ||
+		(first == enemy && second == NONE && third == enemy && fourth == NONE) ||
+		(first == NONE && second == enemy && third == NONE && fourth == enemy) ||
 		(first == NONE && second == enemy && third == enemy && fourth == NONE))
-		score -= 150;
+		score -= 100;
 
 	//Gegner 3er
 	if ((first == enemy && second == NONE && third == enemy && fourth == enemy) ||
 		(first == enemy && second == enemy && third == NONE && fourth == enemy))
-		score -= 300;
+		score -= 1000;
 
 	if ((first == enemy && second == enemy && third == enemy && fourth == NONE) ||
 		(first == NONE && second == enemy && third == enemy && fourth == enemy))
-		score -= 500;
+		score -= 1000;
 
 	//Gegner 4er
-	if (first == enemy && second == enemy && third == enemy && fourth == enemy) score -= 10000000;
+	if (first == enemy && second == enemy && third == enemy && fourth == enemy) score -= 1000000;
 
 	//Old
 	//if (ownCount == 4) score += 10000000;

@@ -16,7 +16,7 @@ private:
 	int inline CheckVerticals(Board* board) const;
 	int inline CheckDiagonals(Board* board) const;
 	int inline CheckAntidiagonals(Board* board) const;
-	int NegaMax(Board* board, int depth, int alpha, int beta, int color);
+	int NegaMax(Board* board, int depth, int alpha, int beta, int color, int &bestslot);
 	int FindBestMove(Board* board);
 	int inline GetHeuristik(Ownership first, Ownership second, Ownership third, Ownership fourth) const;
 
