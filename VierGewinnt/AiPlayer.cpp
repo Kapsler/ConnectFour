@@ -14,8 +14,11 @@ AiPlayer::~AiPlayer()
 
 bool AiPlayer::MakeMove(sf::RenderWindow* window, Board* board)
 {
-	int bestMove = FindBestMove(board);
+	Board* root = new Board(*board);
 
+	int bestMove = FindBestMove(root);
+
+	delete root;
 	//Put token in best slot
 	board->PutTokenInSlot(bestMove, owner);
 
@@ -99,11 +102,7 @@ int AiPlayer::NegaMax(Board* board, int depth, int alpha, int beta, int color, i
 	bool winning = board->getWin();
 	if(winning)
 	{
-		int heuristik = evaluate(board);
-		if(color * heuristik > 0)
-		{
-			std::cout << color * heuristik << std::endl;
-		}
+		int heuristik = evaluate(board);		
 		return color * heuristik;
 	}
 	if (depth == 0)
@@ -114,49 +113,42 @@ int AiPlayer::NegaMax(Board* board, int depth, int alpha, int beta, int color, i
 		return color * heuristik;
 	}
 
-	std::vector<Board*> nextMoves;
 
+
+	int bestValue = INT_MIN + 1;
 	for (int i = 0; i < 7; ++i)
 	{
 		if (board->hasEmptyToken(i))
 		{
-			Board* move = new Board(*board);
-
 			if(color == 1)
 			{
-				move->PutTokenInSlot(i, owner);
+				board->PutTokenInSlot(i, owner);
 			} else
 			{
-				move->PutTokenInSlot(i, enemy);
+				board->PutTokenInSlot(i, enemy);
 			}
-			//DebugBoard(move);
-			nextMoves.push_back(move);
-		}
-	}
 
-	int bestValue = INT_MIN + 1;
-	for(int i = 0; i < nextMoves.size(); ++i)
-	{
-		int score =  -1 * NegaMax(nextMoves.at(i), depth - 1, -beta, -alpha, -color, bestslot);
-		if(score > bestValue)
-		{
-			bestslot = nextMoves.at(i)->getLastPlayedSlot();
-			bestValue = score;
-		}
-		//Alpha Beta Pruning
-		alpha = std::max(alpha, score);
-		if(alpha >= beta)
-		{
-			//break;
+			int score = -1 * NegaMax(board, depth - 1, -beta, -alpha, -color, bestslot);
+			if (score > bestValue)
+			{
+				bestslot = i;
+				bestValue = score;
+			}
+
+			board->removeLastToken(i);
+
+			//Alpha Beta Pruning
+			alpha = std::max(alpha, score);
+			if (alpha >= beta)
+			{
+				break;
+			}
+
+			//DebugBoard(move);
 		}
 	}
 
 	//std::cout << "Best Child:" << bestValue << std::endl;
-	//Clear Moves
-	for(auto i : nextMoves)
-	{
-		delete i;
-	}
 
 	return bestValue;
 }

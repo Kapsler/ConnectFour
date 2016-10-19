@@ -65,6 +65,7 @@ void Token::SetOwnership(Ownership player)
 		{
 			shape->setFillColor(sf::Color::White);
 		}
+		filled = false;
 		break;
 	case PLAYER1:
 		if (shape)

@@ -19,11 +19,13 @@ public:
 	Ownership getOwnerOfToken(sf::Vector2<int> pos);
 	bool hasEmptyToken(int slotNumber);
 	int getLastPlayedSlot();
+	sf::Vector2<int> getLastPlayedToken();
 	const std::vector<std::vector<Token*>> getArray() const;
+	bool removeLastToken(int slot);
 
 private:
 	std::vector<std::vector<Token*>> board;
 
-	sf::Vector2<int> lastPlayedToken;
+	std::vector<sf::Vector2<int>> lastPlayedToken;
 	bool win;
 };
