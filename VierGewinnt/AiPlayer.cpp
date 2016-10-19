@@ -95,7 +95,7 @@ int inline AiPlayer::CheckAntidiagonals(Board* board) const
 int AiPlayer::NegaMax(Board* board, int depth, int alpha, int beta, int color)
 {
 	bool winning = board->getWin();
-	if (depth == 0 || board->BoardIsFull() || winning)
+	if (depth == 0 || winning)
 	{
 		//DebugBoard(board);
 		int heuristik = evaluate(board);
@@ -165,10 +165,11 @@ int AiPlayer::FindBestMove(Board* board)
 	int debugBoardIndex = 0;
 	//Evaluate Boards
 	int highestValueSlot = nextMoves.at(0)->getLastPlayedSlot();
-	int highestValue = NegaMax(nextMoves.at(0), 6, -10000000, 10000000, 1);
+	int highestValue = NegaMax(nextMoves.at(0), 10, -10000000, 10000000, 1);
 	for (int i = 1; i < nextMoves.size(); i++)
 	{
-		int newValue = NegaMax(nextMoves.at(i), 6, -10000000, 10000000, 1);
+		std::cout << "Checking child path: " << i << std::endl;
+		int newValue = NegaMax(nextMoves.at(i), 10, -10000000, 10000000, 1);
 		//Get highest Board
 		if (newValue > highestValue)
 		{
@@ -239,7 +240,7 @@ int inline AiPlayer::GetHeuristik(Ownership first, Ownership second, Ownership t
 		(first == NONE && second == NONE && third == enemy && fourth == NONE) ||
 		(first == NONE && second == enemy && third == NONE && fourth == NONE) ||
 		(first == enemy && second == NONE && third == NONE && fourth == NONE))
-		score += 100;
+		score -= 100;
 
 	//Gegner 2er
 	if ((first == enemy && second == enemy && third == NONE && fourth == NONE) ||
