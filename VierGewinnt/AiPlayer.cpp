@@ -174,10 +174,10 @@ int AiPlayer::FindBestMove(Board* board)
 	int debugBoardIndex = 0;
 	//Evaluate Boards
 	int highestValueSlot = nextMoves.at(0)->getLastPlayedSlot();
-	int highestValue = NegaMax(nextMoves.at(0), 7, -10000000, 10000000, 1);
+	int highestValue = NegaMax(nextMoves.at(0), 8, -10000000, 10000000, 1);
 	for (int i = 1; i < nextMoves.size(); i++)
 	{
-		int newValue = NegaMax(nextMoves.at(i), 7, -10000000, 10000000, 1);
+		int newValue = NegaMax(nextMoves.at(i), 8, -10000000, 10000000, 1);
 		//Get highest Board
 		if (newValue > highestValue)
 		{

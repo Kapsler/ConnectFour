@@ -46,10 +46,10 @@ int Heuristik::getHeuristik()
 		(tokens[0] == enemy && tokens[1] == enemy && tokens[2] == target && tokens[3] == enemy) ||
 		(tokens[0] == enemy && tokens[1] == target && tokens[2] == enemy && tokens[3] == enemy) ||
 		(tokens[0] == target && tokens[1] == enemy && tokens[2] == enemy && tokens[3] == enemy))
-		score += 10000;
+		score += 2000;
 	
 
-	//GEgmer 2er
+	//Gegner 2er
 	if ((tokens[0] == enemy && tokens[1] == enemy && tokens[2] == NONE && tokens[3] == NONE) ||
 		(tokens[0] == NONE && tokens[1] == NONE && tokens[2] == enemy && tokens[3] == enemy) ||
 		(tokens[0] == enemy && tokens[1] == NONE && tokens[2] == NONE && tokens[3] == enemy) ||
@@ -58,9 +58,11 @@ int Heuristik::getHeuristik()
 
 	//Gegner 3er
 	if ((tokens[0] == enemy && tokens[1] == enemy && tokens[2] == enemy && tokens[3] == NONE) ||
-		(tokens[0] == enemy && tokens[1] == enemy && tokens[3] == enemy && tokens[2] == NONE) ||
-		(tokens[0] == enemy && tokens[2] == enemy && tokens[3] == enemy && tokens[1] == NONE) ||
-		(tokens[1] == enemy && tokens[2] == enemy && tokens[3] == enemy && tokens[0] == NONE))
+		(tokens[0] == NONE && tokens[1] == enemy && tokens[2] == enemy && tokens[3] == NONE))
+		score -= 1500;
+
+	if ((tokens[0] == enemy && tokens[1] == NONE && tokens[2] == enemy && tokens[3] == enemy) ||
+		(tokens[0] == enemy && tokens[1] == enemy && tokens[2] == NONE && tokens[3] == enemy))
 		score -= 1000;
 
 	//Gegner 4er

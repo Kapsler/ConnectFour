@@ -23,9 +23,9 @@ int main()
 	window->setKeyRepeatEnabled(false);
 
 	//Init
-	players.push_back(new HumanPlayer(PLAYER1, PLAYER2));
+	//players.push_back(new HumanPlayer(PLAYER1, PLAYER2));
 	players.push_back(new AiPlayer(PLAYER2, PLAYER1));
-	//players.push_back(new AiPlayer(PLAYER1, PLAYER2));
+	players.push_back(new AiPlayer(PLAYER1, PLAYER2));
 	gameManager = new GameManager(7, 6, players);
 
 
