@@ -155,9 +155,11 @@
     <ClCompile Include="HumanPlayer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="TimerClass.cpp" />
     <ClCompile Include="Token.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AiMode.h" />
     <ClInclude Include="AiPlayer.h" />
     <ClInclude Include="Board.h" />
     <ClInclude Include="CommandLineParser.h" />
@@ -166,6 +168,7 @@
     <ClInclude Include="HumanPlayer.h" />
     <ClInclude Include="OwnershipEnum.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="TimerClass.h" />
     <ClInclude Include="Token.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

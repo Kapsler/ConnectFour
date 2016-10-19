@@ -2,10 +2,13 @@
 #include "Heuristik.h"
 #include <iostream>
 
-AiPlayer::AiPlayer(Ownership self, Ownership enemy)
+AiPlayer::AiPlayer(Ownership self, Ownership enemy, int depth, AiMode newmode)
 {
 	owner = self;
 	this->enemy = enemy;
+	playdepth = depth;
+	mode = newmode;
+	timer = new TimerClass();
 }
 
 AiPlayer::~AiPlayer()
@@ -14,13 +17,17 @@ AiPlayer::~AiPlayer()
 
 bool AiPlayer::MakeMove(sf::RenderWindow* window, Board* board)
 {
+	//Init
+	timer->StartTimer();
 	Board* root = new Board(*board);
 
 	int bestMove = FindBestMove(root);
-
 	delete root;
+
 	//Put token in best slot
 	board->PutTokenInSlot(bestMove, owner);
+
+	std::cout << "Turn took " << timer->GetTime() << " seconds." << std::endl;
 
 	return true;
 }
@@ -143,12 +150,107 @@ int AiPlayer::NegaMax(Board* board, int depth, int alpha, int beta, int color, i
 	return bestValue;
 }
 
+int AiPlayer::NegaMax(Board* board, int depth, int color, int &bestslot)
+{
+	bool winning = board->getWin();
+	if (depth == 0)
+	{
+		//DebugBoard(board);
+		int heuristik = evaluate(board);
+		//std::cout << "Heuristik:" << heuristik << std::endl << std::endl;
+		return color * heuristik;
+	}
+	if (winning)
+	{
+		int heuristik = evaluate(board);
+		return color * depth * heuristik;
+	}
+
+	int bestValue = INT_MIN + 1;
+	for (int i = 0; i < 7; ++i)
+	{
+		if (board->hasEmptyToken(i))
+		{
+			if(color == 1)
+			{
+				board->PutTokenInSlot(i, owner);
+			} else
+			{
+				board->PutTokenInSlot(i, enemy);
+			}
+			int temp = 0;
+			int score = -1 * NegaMax(board, depth - 1, -color, temp);
+			if (score > bestValue)
+			{
+				bestslot = i;
+				bestValue = score;
+			}
+
+			board->removeLastToken(i);
+		}
+	}
+
+	return bestValue;
+}
+
+int AiPlayer::NegaMax(Board* board, int color, int &bestslot)
+{
+	bool winning = board->getWin();
+	
+	if (winning)
+	{
+		int heuristik = evaluate(board);
+		return color * heuristik;
+	}
+
+	int bestValue = INT_MIN + 1;
+	for (int i = 0; i < 7; ++i)
+	{
+		if (board->hasEmptyToken(i))
+		{
+			if(color == 1)
+			{
+				board->PutTokenInSlot(i, owner);
+			} else
+			{
+				board->PutTokenInSlot(i, enemy);
+			}
+			int temp = 0;
+			int score = -1 * NegaMax(board, -color, temp);
+			if (score > bestValue)
+			{
+				bestslot = i;
+				bestValue = score;
+			}
+
+			board->removeLastToken(i);
+		}
+	}
+
+	return bestValue;
+}
+
 int AiPlayer::FindBestMove(Board* board)
 {
-	
+
 	//Evaluate Boards
-	int highestValueSlot = 0;
-	int highestValue = NegaMax(board, 10, INT_MIN+1, INT_MAX, 1, highestValueSlot);
+	int highestValueSlot = 0; 
+	int highestValue = 0;
+
+	switch (mode)
+	{
+	case NoDepth:
+		highestValue = NegaMax(board, 1, highestValueSlot);
+		break;
+	case DepthHeuristik: 
+		highestValue = NegaMax(board, playdepth, 1, highestValueSlot);
+		break;
+	case AlphaBeta:
+		highestValue = NegaMax(board, playdepth, INT_MIN + 1, INT_MAX, 1, highestValueSlot);
+		break;
+	default:
+		break;
+	}
 
 	std::cout << "Highest Value:" << highestValue << std::endl;
 	std::cout << "Highest Slot:" << highestValueSlot << std::endl;

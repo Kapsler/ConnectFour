@@ -19,7 +19,9 @@ void ReleaseStuff()
 bool handleParameters(int argc, char* argv[])
 {
 	CommandLineParser input(argc, argv);
-	string firstPlayer, secondPlayer;
+	string firstPlayer, secondPlayer, mode;
+	int depth = 0;
+	AiMode aimode;
 
 	if (input.cmdOptionExists("--first"))
 	{
@@ -41,32 +43,65 @@ bool handleParameters(int argc, char* argv[])
 		return false;
 	}
 
+	if (input.cmdOptionExists("--depth"))
+	{
+		depth = stoi(input.getCmdOption("--depth"));
+	}
+	else
+	{
+		cout << "No depth chosen. Set standard depth: 10." << endl;
+		depth = 10;
+	}
 
+	if (input.cmdOptionExists("--mode"))
+	{
+		mode = input.getCmdOption("--mode");
+	}
+	else
+	{
+		cout << "No mode chosen. Set standard mode: AlphaBeta." << endl;
+		mode = "AlphaBeta";
+	}
 
+	if(mode == "NoDepth" || mode == "0")
+	{
+		aimode = NoDepth;
+	} else if(mode == "DepthHeuristik" || mode == "1")
+	{
+		aimode = DepthHeuristik;
+	} else if(mode == "AlphaBeta" || mode == "2")
+	{
+		aimode = AlphaBeta;
+	} else
+	{
+		aimode = AlphaBeta;
+	}
 
 	if(firstPlayer == "ai")
 	{
-		players.push_back(new AiPlayer(PLAYER1, PLAYER2));
+		players.push_back(new AiPlayer(PLAYER1, PLAYER2, depth, aimode));
 	} else if (firstPlayer == "human")
 	{
 		players.push_back(new HumanPlayer(PLAYER1, PLAYER2));
 	} else
 	{
-		std::cerr << "--first must be followed by 'ai' or 'human'" << std::endl;
+		cerr << "--first must be followed by 'ai' or 'human'" << endl;
 		return false;
 	}
 
 	if(secondPlayer == "ai")
 	{
-		players.push_back(new AiPlayer(PLAYER2, PLAYER1));
+		players.push_back(new AiPlayer(PLAYER2, PLAYER1, depth, aimode));
 	} else if (secondPlayer == "human")
 	{
 		players.push_back(new HumanPlayer(PLAYER2, PLAYER1));
 	} else
 	{
-		std::cerr << "--second must be followed by 'ai' or 'human'" << std::endl;
+		cerr << "--second must be followed by 'ai' or 'human'" << endl;
 		return false;
 	}
+
+	cout << endl;
 
 	return true;
 }
