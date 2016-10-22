@@ -1,5 +1,4 @@
 #include "AiPlayer.h"
-#include "Heuristik.h"
 #include <iostream>
 
 AiPlayer::AiPlayer(Ownership self, Ownership enemy, int depth, AiMode newmode)
@@ -262,7 +261,7 @@ int inline AiPlayer::GetHeuristik(const Ownership &first, const Ownership &secon
 	int score = 0;
 
 	//XXXX
-	if (first == owner && second == owner && third == owner && fourth == owner)	score += 100;
+	if (first == owner && second == owner && third == owner && fourth == owner)	score += 1000;
 
 	//XXX_ || _XXX 
 	if ((first == owner && second == owner && third == owner && fourth == NONE) ||
@@ -288,19 +287,6 @@ int inline AiPlayer::GetHeuristik(const Ownership &first, const Ownership &secon
 		(first == NONE && second == NONE && third == owner && fourth == NONE) ||
 		(first == NONE && second == owner && third == NONE && fourth == NONE))
 		score += 0;
-
-	////Gegner Konter
-	//if ((first == enemy && second == enemy && third == enemy && fourth == owner) ||
-	//	(first == enemy && second == enemy && third == owner && fourth == enemy) ||
-	//	(first == enemy && second == owner && third == enemy && fourth == enemy) ||
-	//	(first == owner && second == enemy && third == enemy && fourth == enemy))
-	//	score += 1000;
-	////Gegner Konter
-	//if ((first == owner && second == owner && third == owner && fourth == enemy) ||
-	//	(first == owner && second == owner && third == enemy && fourth == owner) ||
-	//	(first == owner && second == enemy && third == owner && fourth == owner) ||
-	//	(first == enemy && second == owner && third == owner && fourth == owner))
-	//	score -= 1000;
 
 	//Gegner 1er
 	if ((first == NONE && second == NONE && third == NONE && fourth == enemy) ||
@@ -328,7 +314,7 @@ int inline AiPlayer::GetHeuristik(const Ownership &first, const Ownership &secon
 		score -= 10;
 
 	//Gegner 4er
-	if (first == enemy && second == enemy && third == enemy && fourth == enemy) score -= 100;
+	if (first == enemy && second == enemy && third == enemy && fourth == enemy) score -= 1000;
 
 	return score;
 }

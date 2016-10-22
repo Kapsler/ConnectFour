@@ -151,7 +151,6 @@
     <ClCompile Include="Board.cpp" />
     <ClCompile Include="CommandLineParser.cpp" />
     <ClCompile Include="GameManager.cpp" />
-    <ClCompile Include="Heuristik.cpp" />
     <ClCompile Include="HumanPlayer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -164,7 +163,6 @@
     <ClInclude Include="Board.h" />
     <ClInclude Include="CommandLineParser.h" />
     <ClInclude Include="GameManager.h" />
-    <ClInclude Include="Heuristik.h" />
     <ClInclude Include="HumanPlayer.h" />
     <ClInclude Include="OwnershipEnum.h" />
     <ClInclude Include="Player.h" />
