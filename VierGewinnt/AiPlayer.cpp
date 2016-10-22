@@ -38,7 +38,7 @@ int AiPlayer::evaluate(Board* board) const
 
 	const std::vector<std::vector<Token*>>* boardArray = board->GetArrayPtr();
 
-	score += CheckHorizontals(boardArray);
+	score += CheckHorizontals(boardArray) * 1.5f;
 	score += CheckVerticals(boardArray);
 	score += CheckDiagonals(boardArray);
 	score += CheckAntidiagonals(boardArray);
@@ -107,7 +107,6 @@ int AiPlayer::NegaMax(Board* board, int depth, int alpha, int beta, int color, i
 	{
 		//DebugBoard(board);
 		int heuristik = evaluate(board);
-		//std::cout << "Heuristik:" << heuristik << std::endl << std::endl;
 		return color * heuristik;
 	}
 	if (winning)
@@ -258,7 +257,7 @@ int AiPlayer::FindBestMove(Board* board)
 	return highestValueSlot;
 }
 
-int inline AiPlayer::GetHeuristik(Ownership first, Ownership second, Ownership third, Ownership fourth) const
+int inline AiPlayer::GetHeuristik(const Ownership &first, const Ownership &second, const Ownership &third,  const Ownership &fourth) const
 {
 	int score = 0;
 

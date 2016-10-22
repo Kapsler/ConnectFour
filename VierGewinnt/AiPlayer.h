@@ -22,7 +22,7 @@ private:
 	int NegaMax(Board* board, int depth, int color, int &bestslot);
 	int NegaMax(Board* board, int color, int &bestslot);
 	int FindBestMove(Board* board);
-	int inline GetHeuristik(Ownership first, Ownership second, Ownership third, Ownership fourth) const;
+	int inline GetHeuristik(const Ownership &first, const Ownership &second, const Ownership &third, const Ownership &fourth) const;
 
 	static void DebugBoard(Board* board);
 	int playdepth;
